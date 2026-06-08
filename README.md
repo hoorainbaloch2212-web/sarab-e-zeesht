@@ -1,4 +1,4 @@
-# سراب ِ زیشت — Sarab-e-Zeest
+#Sarab-e-Zeest
 ## Premium Urdu Novel Website
 
 A complete, production-ready dark-mode novel website built with HTML5, CSS3, and Vanilla JavaScript.
