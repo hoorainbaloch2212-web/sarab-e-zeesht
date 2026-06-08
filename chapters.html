@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapters — Sarab-e-Zeest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo">Sarab<span>-e-</span>Zeesht</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="characters.html">Characters</a></li>
+    <li><a href="chapters.html" class="active">Chapters</a></li>
+    <li><a href="author.html">Author</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="../index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="characters.html">Characters</a>
+  <a href="chapters.html">Chapters</a>
+  <a href="author.html">Author</a>
+</div>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-content fade-in" dir="ltr">
+    <p class="section-label" style="justify-content:center;">All Chapters — تمام ابواب</p>
+    <h1 class="page-title">Read the Novel</h1>
+    <p class="page-title-urdu" dir="rtl">ناول پڑھیں</p>
+    <p class="page-subtitle">15 Complete Chapters · Fully Unlocked</p>
+  </div>
+</div>
+
+<section class="chapters-section">
+  <div class="section-inner" dir="ltr">
+
+    <!-- SEARCH -->
+    <div class="chapters-search">
+      <span class="search-icon">⌕</span>
+      <input
+        type="text"
+        class="search-input"
+        id="chapterSearch"
+        placeholder="Search chapters... ابواب تلاش کریں"
+        dir="auto"
+      />
+    </div>
+
+    <!-- CHAPTER LIST -->
+    <div class="chapters-grid" id="chaptersGrid"></div>
+
+    <!-- STATS -->
+    <div style="display:flex; justify-content:center; gap:3rem; margin-top:4rem; flex-wrap:wrap;" class="fade-in">
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.5rem; color:var(--gold); margin-bottom:0.25rem;">15</div>
+        <div style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-muted);">Chapters</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.5rem; color:var(--gold); margin-bottom:0.25rem;">3</div>
+        <div style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-muted);">Characters</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.5rem; color:var(--gold); margin-bottom:0.25rem;">1</div>
+        <div style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-muted);">Fate</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif; font-size:2.5rem; color:var(--gold); margin-bottom:0.25rem;">∞</div>
+        <div style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-muted);">Emotions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer dir="ltr">
+  <div class="footer-logo">Sarab-e-Zeest</div>
+  <span class="footer-logo-urdu" dir="rtl">سراب زیست</span>
+  <p class="footer-tagline">"Love vs Fate — محبت بمقابلہ تقدیر"</p>
+  <ul class="footer-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="chapters.html">Chapters</a></li>
+    <li><a href="characters.html">Characters</a></li>
+    <li><a href="author.html">Author</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 Sarab-e-Zeest. A Complete Urdu Novel.</p>
+</footer>
+
+<script src="../js/chapters.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const grid = document.getElementById('chaptersGrid');
+  if (grid && typeof CHAPTERS !== 'undefined') {
+    CHAPTERS.forEach((ch, i) => {
+      const a = document.createElement('a');
+      a.href = `chapter.html?ch=${ch.num}`;
+      a.className = 'chapter-card fade-in';
+      a.style.animationDelay = `${i * 0.04}s`;
+      a.innerHTML = `
+        <div class="chapter-number-badge">${String(ch.num).padStart(2,'0')}</div>
+        <div class="chapter-card-content">
+          <div class="chapter-urdu-name">${ch.urdu}</div>
+          <div class="chapter-en-name">${ch.english}</div>
+        </div>
+        <div class="chapter-status">
+          <div class="status-dot"></div>
+          Available
+        </div>
+      `;
+      grid.appendChild(a);
+    });
+
+    // Observe new elements
+    setTimeout(() => {
+      document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
+    }, 100);
+  }
+</script>
+</body>
+</html>
