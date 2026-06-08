@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading — Sarab-e-Zeest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { background: #0a0a0e; }
+
+    .reader-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(91,59,138,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 0% 100%, rgba(91,59,138,0.05) 0%, transparent 60%),
+        #0a0a0e;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .reader-container { position: relative; z-index: 1; }
+
+    /* Font size controls */
+    .font-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    .font-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 28px; height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .font-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .chapter-not-found {
+      text-align: center;
+      padding: 10rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .chapter-body {
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    /* Decorative ambiance */
+    .reading-ambiance {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(0deg, rgba(10,10,14,0.9) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+
+<div class="reader-bg"></div>
+<div id="progressBar" class="progress-bar"></div>
+
+<!-- READER HEADER -->
+<div class="reader-header" dir="ltr">
+  <a href="chapters.html" class="reader-nav-back">← All Chapters</a>
+  <div class="reader-chapter-title" id="headerTitle" dir="rtl">Loading...</div>
+  <div class="font-controls">
+    <button class="font-btn" id="fontSmaller" title="Smaller text">A-</button>
+    <button class="font-btn" id="fontBigger" title="Larger text">A+</button>
+  </div>
+  <button class="reader-bookmark-btn" id="bookmarkBtn">✧ Bookmark</button>
+</div>
+
+<!-- MAIN READER -->
+<div class="reader-container">
+  <div class="reader-content" id="readerContent">
+    <div class="chapter-not-found" id="notFound" style="display:none;">
+      <p style="font-family:'Cinzel',serif; color:var(--gold);">Chapter not found.</p>
+      <a href="chapters.html" style="color:var(--text-muted);">← Back to chapters</a>
+    </div>
+
+    <div id="chapterMain">
+      <div class="chapter-header-reader">
+        <p class="chapter-number-label" id="chNumLabel">Chapter 01</p>
+        <h1 class="chapter-title-reader" id="chUrduTitle" dir="rtl">Loading...</h1>
+        <p class="chapter-title-en-reader" id="chEnTitle">Loading...</p>
+        <div class="reader-ornament">✦ ✧ ✦</div>
+      </div>
+
+      <div class="chapter-body" id="chapterBody" dir="rtl">
+        <!-- Content injected by JS -->
+      </div>
+
+      <div class="divider-ornament" style="margin-top:4rem;">✦ ✧ ✦</div>
+    </div>
+  </div>
+</div>
+
+<!-- READER FOOTER NAV -->
+<div class="reader-footer" dir="ltr">
+  
+  <span class="reader-page-info" id="pageInfo">Ch 1 of 15</span>
+
+</div>
+
+<script src="../js/chapters.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  // --- Get chapter number from URL ---
+  const params = new URLSearchParams(window.location.search);
+  let currentNum = parseInt(params.get('ch')) || 1;
+  let fontSize = 1.2; // rem
+
+  function loadChapter(num) {
+    if (!CHAPTERS || num < 1 || num > CHAPTERS.length) {
+      document.getElementById('notFound').style.display = 'block';
+      document.getElementById('chapterMain').style.display = 'none';
+      return;
+    }
+
+    const ch = CHAPTERS[num - 1];
+    currentNum = num;
+
+    // Update URL without reload
+    const newUrl = `chapter.html?ch=${num}`;
+    window.history.replaceState({}, '', newUrl);
+
+    // Update UI
+    document.title = `${ch.urdu} — Sarab-e-Zeest`;
+    document.getElementById('headerTitle').textContent = ch.urdu;
+    document.getElementById('chNumLabel').textContent = `Chapter ${String(num).padStart(2, '0')}`;
+    document.getElementById('chUrduTitle').textContent = ch.urdu;
+    document.getElementById('chEnTitle').textContent = ch.english;
+    document.getElementById('chapterBody').innerHTML = ch.content;
+    document.getElementById('pageInfo').textContent = `Ch ${num} of ${CHAPTERS.length}`;
+
+    // Prev/Next
+    document.getElementById('prevBtn').disabled = num === 1;
+    document.getElementById('nextBtn').disabled = num === CHAPTERS.length;
+
+    // Save last read
+    setLastRead(num, ch.urdu);
+
+    // Update bookmark button
+    updateBookmarkBtn(num);
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Animate content
+    const body = document.getElementById('chapterBody');
+    body.style.opacity = '0';
+    body.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      body.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      body.style.opacity = '1';
+      body.style.transform = 'translateY(0)';
+    }, 100);
+  }
+
+  function navigate(dir) {
+    const newNum = currentNum + dir;
+    if (newNum >= 1 && newNum <= CHAPTERS.length) {
+      loadChapter(newNum);
+    }
+  }
+
+  // --- Font size controls ---
+  document.getElementById('fontBigger').addEventListener('click', () => {
+    fontSize = Math.min(fontSize + 0.1, 1.8);
+    document.getElementById('chapterBody').style.fontSize = fontSize + 'rem';
+  });
+
+  document.getElementById('fontSmaller').addEventListener('click', () => {
+    fontSize = Math.max(fontSize - 0.1, 0.9);
+    document.getElementById('chapterBody').style.fontSize = fontSize + 'rem';
+  });
+
+  // --- Bookmark button ---
+  document.getElementById('bookmarkBtn').addEventListener('click', () => {
+    const ch = CHAPTERS[currentNum - 1];
+    if (ch) toggleBookmark(currentNum, ch.urdu);
+  });
+
+  // --- Keyboard nav ---
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') navigate(-1);
+    if (e.key === 'ArrowLeft') navigate(1);
+  });
+
+  // --- Init ---
+  loadChapter(currentNum);
+</script>
+</body>
+</html>
